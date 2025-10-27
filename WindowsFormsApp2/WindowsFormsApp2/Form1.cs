@@ -137,11 +137,11 @@ namespace WindowsFormsApp2
                 // 对于正向计时，需要确保目标大于0；对于反向计时，剩余需大于0
                 if (isCountUp)
                 {
-                    if (targetSeconds <= 0)
-                    {
-                        MessageBox.Show("请设置一个大于 0 的目标时长（时/分/秒）。", "提示", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                        return;
-                    }
+                    //if (targetSeconds <= 0)
+                    //{
+                    //    //MessageBox.Show("请设置一个大于 0 的目标时长（时/分/秒）。", "提示", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    //    return;
+                    //}
                 }
                 else
                 {
@@ -161,7 +161,9 @@ namespace WindowsFormsApp2
                 int minutes = (isCountUp ? targetSeconds : remainingSeconds) / 60;
                 string title = txtTitle != null ? txtTitle.Text.Trim() : string.Empty;
                 string action = isCountUp ? "正向计时" : "反向计时";
+                if(!isCountUp)
                 AppendLog(string.Format("{0} {1}{2}分钟 {3}", DateTime.Now.ToString("yyyy.MM.dd HH:mm:ss"), action, minutes, string.IsNullOrEmpty(title) ? string.Empty : (" " + title)));
+                else AppendLog(string.Format("{0} {1} {2}", DateTime.Now.ToString("yyyy.MM.dd HH:mm:ss"), action, string.IsNullOrEmpty(title) ? string.Empty : (" " + title)));
             }
             else
             {
@@ -199,6 +201,7 @@ namespace WindowsFormsApp2
             if (isCountUp)
             {
                 // 正向计时：从0递增到目标
+                targetSeconds = int.MaxValue;
                 remainingSeconds++;
                 UpdateDisplay();
                 if (remainingSeconds >= targetSeconds)
