@@ -109,13 +109,13 @@ body {
     margin-bottom: 0;
 }
 
-/* lil-gui customization */
-.lil-gui {
-    --background-color: rgba(0, 0, 0, 0.7) !important;
-    --widget-color: rgba(255, 255, 255, 0.1) !important;
-    --focus-color: #4a9eff !important;
-    --hover-color: rgba(255, 255, 255, 0.15) !important;
-    --font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif !important;
+/* lil-gui customization - !important needed to override inline styles from the library */
+.lil-gui.root {
+    --background-color: rgba(0, 0, 0, 0.7);
+    --widget-color: rgba(255, 255, 255, 0.1);
+    --focus-color: #4a9eff;
+    --hover-color: rgba(255, 255, 255, 0.15);
+    --font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
     position: absolute !important;
     top: 20px !important;
     left: 20px !important;

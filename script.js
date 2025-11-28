@@ -411,10 +411,19 @@ function initMediaPipeHands() {
     
     cameraInstance.start().catch((err) => {
         console.warn('Camera access denied or not available:', err);
-        document.getElementById('info-panel').innerHTML = `
-            <p style="color: #ff6b6b;">Camera access denied</p>
-            <p>Please allow camera access for hand tracking</p>
-        `;
+        const infoPanel = document.getElementById('info-panel');
+        // Clear existing content safely
+        while (infoPanel.firstChild) {
+            infoPanel.removeChild(infoPanel.firstChild);
+        }
+        // Create error message elements
+        const errorMsg = document.createElement('p');
+        errorMsg.style.color = '#ff6b6b';
+        errorMsg.textContent = 'Camera access denied';
+        const helpMsg = document.createElement('p');
+        helpMsg.textContent = 'Please allow camera access for hand tracking';
+        infoPanel.appendChild(errorMsg);
+        infoPanel.appendChild(helpMsg);
     });
 }
 
@@ -552,12 +561,12 @@ function initFullscreenToggle() {
     });
     
     document.addEventListener('fullscreenchange', () => {
-        btn.textContent = document.fullscreenElement ? '⛶' : '⛶';
+        btn.textContent = document.fullscreenElement ? '⛝' : '⛶';
     });
 }
 
 // ============================================================================
-// Initialization
+// Initialization and Cleanup
 // ============================================================================
 
 function init() {
@@ -566,6 +575,33 @@ function init() {
     initFullscreenToggle();
     initMediaPipeHands();
     animate();
+    
+    // Add cleanup on page unload
+    window.addEventListener('beforeunload', cleanup);
+}
+
+function cleanup() {
+    // Cancel animation frame to prevent memory leaks
+    if (animationId) {
+        cancelAnimationFrame(animationId);
+        animationId = null;
+    }
+    
+    // Dispose of Three.js resources
+    if (particles) {
+        particles.geometry.dispose();
+        particleMaterial.dispose();
+        scene.remove(particles);
+    }
+    
+    if (renderer) {
+        renderer.dispose();
+    }
+    
+    // Destroy GUI
+    if (gui) {
+        gui.destroy();
+    }
 }
 
 // Start when DOM is ready
