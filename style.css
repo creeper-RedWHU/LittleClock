@@ -1,0 +1,171 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    overflow: hidden;
+    background: #000;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+#container {
+    position: relative;
+    width: 100vw;
+    height: 100vh;
+}
+
+#canvas3d {
+    display: block;
+    width: 100%;
+    height: 100%;
+}
+
+#webcam {
+    position: absolute;
+    bottom: 20px;
+    right: 20px;
+    width: 200px;
+    height: 150px;
+    border-radius: 12px;
+    border: 2px solid rgba(255, 255, 255, 0.3);
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+    object-fit: cover;
+    transform: scaleX(-1);
+    z-index: 100;
+}
+
+#hand-status {
+    position: absolute;
+    top: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: rgba(0, 0, 0, 0.6);
+    color: #fff;
+    padding: 10px 24px;
+    border-radius: 30px;
+    font-size: 14px;
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    z-index: 100;
+    transition: all 0.3s ease;
+}
+
+#hand-status.tracking {
+    background: rgba(0, 200, 100, 0.4);
+    border-color: rgba(0, 200, 100, 0.5);
+}
+
+#fullscreen-btn {
+    position: absolute;
+    bottom: 20px;
+    left: 20px;
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    border: none;
+    background: rgba(255, 255, 255, 0.15);
+    color: #fff;
+    font-size: 24px;
+    cursor: pointer;
+    backdrop-filter: blur(10px);
+    transition: all 0.3s ease;
+    z-index: 100;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+#fullscreen-btn:hover {
+    background: rgba(255, 255, 255, 0.3);
+    transform: scale(1.1);
+}
+
+#fullscreen-btn:active {
+    transform: scale(0.95);
+}
+
+/* lil-gui custom styling */
+.lil-gui {
+    --background-color: rgba(0, 0, 0, 0.7) !important;
+    --text-color: #fff !important;
+    --title-background-color: rgba(50, 50, 50, 0.8) !important;
+    --widget-color: rgba(255, 255, 255, 0.1) !important;
+    --hover-color: rgba(255, 255, 255, 0.2) !important;
+    --focus-color: rgba(100, 150, 255, 0.5) !important;
+    --number-color: #8bf !important;
+    --string-color: #a2fca2 !important;
+    backdrop-filter: blur(10px) !important;
+    border-radius: 12px !important;
+    border: 1px solid rgba(255, 255, 255, 0.1) !important;
+}
+
+.lil-gui.root {
+    position: fixed !important;
+    top: 20px !important;
+    right: 20px !important;
+}
+
+/* Loading overlay */
+.loading-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: #000;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+    transition: opacity 0.5s ease;
+}
+
+.loading-overlay.hidden {
+    opacity: 0;
+    pointer-events: none;
+}
+
+.loading-spinner {
+    width: 60px;
+    height: 60px;
+    border: 3px solid rgba(255, 255, 255, 0.1);
+    border-top-color: #fff;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+}
+
+.loading-text {
+    color: #fff;
+    margin-top: 20px;
+    font-size: 16px;
+}
+
+@keyframes spin {
+    to { transform: rotate(360deg); }
+}
+
+/* Responsive webcam preview */
+@media (max-width: 768px) {
+    #webcam {
+        width: 120px;
+        height: 90px;
+        bottom: 10px;
+        right: 10px;
+    }
+    
+    #fullscreen-btn {
+        width: 40px;
+        height: 40px;
+        font-size: 18px;
+        bottom: 10px;
+        left: 10px;
+    }
+    
+    #hand-status {
+        font-size: 12px;
+        padding: 8px 16px;
+    }
+}
