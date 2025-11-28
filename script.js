@@ -18,11 +18,24 @@ const CONFIG = {
 let scene, camera, renderer, particles, particleGeometry, particleMaterial;
 let targetPositions = [];
 let currentPositions = [];
+let randomOffsets = []; // Pre-computed random offsets for performance
 let gui, guiSettings;
 let hands, webcamCamera;
 let handOpenness = 0;
 let isHandDetected = false;
 let animationId;
+
+/**
+ * Generate pre-computed random offsets for particle diffusion
+ * This avoids calling Math.random() every frame for every particle
+ */
+function generateRandomOffsets(count) {
+    const offsets = new Float32Array(count * 3);
+    for (let i = 0; i < offsets.length; i++) {
+        offsets[i] = (Math.random() - 0.5);
+    }
+    return offsets;
+}
 
 // DOM Elements
 const canvasContainer = document.getElementById('canvas-container');
@@ -274,6 +287,9 @@ function initParticles() {
     targetPositions = getShapePositions(CONFIG.defaultShape);
     currentPositions = new Float32Array(targetPositions.length);
     
+    // Generate pre-computed random offsets for performance optimization
+    randomOffsets = generateRandomOffsets(CONFIG.particleCount);
+    
     // Start with random positions
     for (let i = 0; i < currentPositions.length; i++) {
         currentPositions[i] = (Math.random() - 0.5) * 5;
@@ -309,11 +325,21 @@ function updateParticles() {
     const diffusion = handOpenness * 2;
     const scale = 1 + handOpenness * 0.5;
     
+    // Use pre-computed random offsets for performance
+    // Rotate offset index over time for variation without per-frame random calls
+    const time = Date.now() * 0.001;
+    const offsetPhase = Math.sin(time) * 0.5 + 0.5;
+    
     for (let i = 0; i < positions.length; i += 3) {
+        // Use pre-computed offsets with time-based modulation for variation
+        const offsetX = randomOffsets[i] * diffusion * (1 + offsetPhase * 0.3);
+        const offsetY = randomOffsets[i + 1] * diffusion * (1 + offsetPhase * 0.3);
+        const offsetZ = randomOffsets[i + 2] * diffusion * (1 + offsetPhase * 0.3);
+        
         // Lerp to target with diffusion
-        const targetX = targetPositions[i] * scale + (Math.random() - 0.5) * diffusion;
-        const targetY = targetPositions[i + 1] * scale + (Math.random() - 0.5) * diffusion;
-        const targetZ = targetPositions[i + 2] * scale + (Math.random() - 0.5) * diffusion;
+        const targetX = targetPositions[i] * scale + offsetX;
+        const targetY = targetPositions[i + 1] * scale + offsetY;
+        const targetZ = targetPositions[i + 2] * scale + offsetZ;
         
         positions[i] += (targetX - positions[i]) * speed;
         positions[i + 1] += (targetY - positions[i + 1]) * speed;
