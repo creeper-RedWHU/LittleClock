@@ -15,7 +15,22 @@ const CONFIG = {
     defaultColor: '#ff66aa',
     handSmoothingFactor: 0.15,
     minScale: 0.3,
-    maxScale: 2.5
+    maxScale: 2.5,
+    // Hand tracking distance normalization
+    handDistanceMin: 0.1,
+    handDistanceRange: 0.3,
+    // Auto-rotation speeds
+    rotationSpeedY: 0.003,
+    rotationSpeedX: 0.001
+};
+
+// Shape definitions with consistent naming
+const SHAPES = {
+    heart: { name: 'Heart', generator: 'generateHeartShape' },
+    flower: { name: 'Flower', generator: 'generateFlowerShape' },
+    saturn: { name: 'Saturn', generator: 'generateSaturnShape' },
+    buddha: { name: 'Buddha', generator: 'generateBuddhaShape' },
+    fireworks: { name: 'Fireworks', generator: 'generateFireworksShape' }
 };
 
 // ============================================
@@ -289,28 +304,6 @@ function generateBuddhaShape(count) {
     return positions;
 }
 
-function generateTorusKnotShape(count) {
-    const positions = [];
-    const p = 3, q = 2;
-    const radius = 0.8;
-    const tube = 0.3;
-    
-    for (let i = 0; i < count; i++) {
-        const u = Math.random() * Math.PI * 2;
-        const v = Math.random() * Math.PI * 2;
-        
-        // Torus knot parametric equations
-        const r = radius + tube * Math.cos(v);
-        const x = r * (Math.cos(p * u) + 0.5 * Math.cos(q * u));
-        const y = r * Math.sin(p * u);
-        const z = tube * Math.sin(v) + 0.5 * Math.sin(q * u);
-        
-        positions.push(new THREE.Vector3(x, y, z));
-    }
-    
-    return positions;
-}
-
 function generateFireworksShape(count) {
     const positions = [];
     
@@ -359,7 +352,6 @@ function transitionToShape(shapeName) {
         'flower': generateFlowerShape,
         'saturn': generateSaturnShape,
         'buddha': generateBuddhaShape,
-        'torusknot': generateTorusKnotShape,
         'fireworks': generateFireworksShape
     };
     
@@ -453,18 +445,17 @@ function updateFireworks(deltaTime) {
 function setupGUI() {
     gui = new lil.GUI({ title: 'Particle Controls' });
     
+    // Build shape options from SHAPES config
+    const shapeOptions = Object.values(SHAPES).map(s => s.name);
+    const shapeNameToKey = Object.fromEntries(
+        Object.entries(SHAPES).map(([key, val]) => [val.name, key])
+    );
+    
     // Model selection
-    gui.add(guiParams, 'model', ['Heart', 'Flower', 'Saturn', 'Buddha', 'Fireworks'])
+    gui.add(guiParams, 'model', shapeOptions)
         .name('Shape')
         .onChange((value) => {
-            const shapeMap = {
-                'Heart': 'heart',
-                'Flower': 'flower',
-                'Saturn': 'saturn',
-                'Buddha': 'buddha',
-                'Fireworks': 'fireworks'
-            };
-            transitionToShape(shapeMap[value]);
+            transitionToShape(shapeNameToKey[value]);
         });
     
     // Color picker
@@ -632,8 +623,9 @@ function onHandResults(results) {
         
         const avgDistance = distances.reduce((a, b) => a + b, 0) / distances.length;
         
-        // Normalize (typical range is 0.1 to 0.4)
-        targetHandOpenness = Math.min(Math.max((avgDistance - 0.1) / 0.3, 0), 1);
+        // Normalize hand openness using CONFIG values
+        targetHandOpenness = Math.min(Math.max(
+            (avgDistance - CONFIG.handDistanceMin) / CONFIG.handDistanceRange, 0), 1);
     } else {
         isHandTracking = false;
         statusIcon.textContent = '🖐️';
@@ -678,8 +670,8 @@ function animate() {
     
     // Auto rotation
     if (guiParams.autoRotate && particles) {
-        particles.rotation.y += 0.003;
-        particles.rotation.x += 0.001;
+        particles.rotation.y += CONFIG.rotationSpeedY;
+        particles.rotation.x += CONFIG.rotationSpeedX;
     }
     
     // Render
