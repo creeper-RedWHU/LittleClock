@@ -3,6 +3,9 @@
 // Uses Three.js and MediaPipe Hands
 // ============================================
 
+// CDN URLs for external resources
+const MEDIAPIPE_CDN_BASE = 'https://cdn.jsdelivr.net/npm/@mediapipe/hands';
+
 // Global variables
 let scene, camera, renderer, particles;
 let particlePositions = [];
@@ -339,7 +342,7 @@ function setupHandTracking() {
     // Initialize MediaPipe Hands
     const hands = new Hands({
         locateFile: (file) => {
-            return `https://cdn.jsdelivr.net/npm/@mediapipe/hands/${file}`;
+            return `${MEDIAPIPE_CDN_BASE}/${file}`;
         }
     });
     
@@ -508,21 +511,21 @@ function setupGUI() {
 
 function setupFullscreenButton() {
     const btn = document.getElementById('fullscreen-btn');
+    const enterFullscreenIcon = '⛶';
+    const exitFullscreenIcon = '⛏';
     
     btn.addEventListener('click', () => {
         if (!document.fullscreenElement) {
             document.documentElement.requestFullscreen().catch(err => {
                 console.log('Fullscreen error:', err);
             });
-            btn.textContent = '⛶';
         } else {
             document.exitFullscreen();
-            btn.textContent = '⛶';
         }
     });
     
     document.addEventListener('fullscreenchange', () => {
-        btn.textContent = document.fullscreenElement ? '⛶' : '⛶';
+        btn.textContent = document.fullscreenElement ? exitFullscreenIcon : enterFullscreenIcon;
     });
 }
 
