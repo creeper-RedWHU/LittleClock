@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>3D Particle System - Hand Gesture Control</title>
+    
+    <!-- Styles -->
+    <link rel="stylesheet" href="style.css">
+    
+    <!-- Three.js -->
+    <script src="https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.min.js"></script>
+    
+    <!-- Lil-GUI -->
+    <script src="https://cdn.jsdelivr.net/npm/lil-gui@0.19.1/dist/lil-gui.umd.min.js"></script>
+    
+    <!-- MediaPipe Hands -->
+    <script src="https://cdn.jsdelivr.net/npm/@mediapipe/hands@0.4.1675469240/hands.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@mediapipe/camera_utils@0.3.1675466862/camera_utils.js"></script>
+</head>
+<body>
+    <!-- Loading overlay -->
+    <div id="loading-overlay">
+        <div class="loading-content">
+            <div class="spinner"></div>
+            <p id="loading-text">Initializing camera...</p>
+        </div>
+    </div>
+    
+    <!-- Main canvas container -->
+    <div id="canvas-container"></div>
+    
+    <!-- Hidden video element for webcam -->
+    <video id="webcam" autoplay playsinline style="display: none;"></video>
+    
+    <!-- Fullscreen button -->
+    <button id="fullscreen-btn" title="Toggle Fullscreen">
+        <svg id="expand-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"/>
+        </svg>
+        <svg id="compress-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="display: none;">
+            <path d="M4 14h6v6m10-10h-6V4m0 6 7-7M3 21l7-7"/>
+        </svg>
+    </button>
+    
+    <!-- Hand detection feedback -->
+    <div id="hand-feedback">
+        <span id="hand-status">No hands detected</span>
+    </div>
+    
+    <!-- Main script -->
+    <script src="script.js"></script>
+</body>
+</html>

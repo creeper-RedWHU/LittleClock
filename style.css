@@ -1,0 +1,220 @@
+/* Reset and base styles */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+html, body {
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+    background: #000;
+}
+
+/* Canvas container */
+#canvas-container {
+    width: 100%;
+    height: 100%;
+    position: fixed;
+    top: 0;
+    left: 0;
+}
+
+#canvas-container canvas {
+    display: block;
+}
+
+/* Loading overlay */
+#loading-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.9);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+    transition: opacity 0.5s ease;
+}
+
+#loading-overlay.hidden {
+    opacity: 0;
+    pointer-events: none;
+}
+
+.loading-content {
+    text-align: center;
+    color: #fff;
+}
+
+.spinner {
+    width: 60px;
+    height: 60px;
+    border: 4px solid rgba(255, 255, 255, 0.2);
+    border-top-color: #00d4ff;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+    margin: 0 auto 20px;
+}
+
+@keyframes spin {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+#loading-text {
+    font-size: 16px;
+    color: rgba(255, 255, 255, 0.8);
+    letter-spacing: 1px;
+}
+
+/* Fullscreen button */
+#fullscreen-btn {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    width: 50px;
+    height: 50px;
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 12px;
+    cursor: pointer;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    transition: all 0.3s ease;
+    z-index: 100;
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+}
+
+#fullscreen-btn:hover {
+    background: rgba(255, 255, 255, 0.2);
+    border-color: rgba(255, 255, 255, 0.4);
+    transform: scale(1.05);
+}
+
+#fullscreen-btn svg {
+    width: 24px;
+    height: 24px;
+    color: rgba(255, 255, 255, 0.8);
+}
+
+/* Hand feedback indicator */
+#hand-feedback {
+    position: fixed;
+    bottom: 20px;
+    left: 20px;
+    padding: 10px 16px;
+    background: rgba(0, 0, 0, 0.6);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 8px;
+    color: rgba(255, 255, 255, 0.7);
+    font-size: 13px;
+    z-index: 100;
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    transition: all 0.3s ease;
+}
+
+#hand-feedback.active {
+    border-color: rgba(0, 212, 255, 0.5);
+    color: #00d4ff;
+}
+
+/* Lil-GUI customization */
+.lil-gui {
+    --background-color: rgba(20, 20, 30, 0.85) !important;
+    --text-color: rgba(255, 255, 255, 0.9) !important;
+    --title-background-color: rgba(0, 100, 150, 0.5) !important;
+    --widget-color: rgba(50, 60, 80, 0.8) !important;
+    --hover-color: rgba(60, 80, 120, 0.8) !important;
+    --focus-color: rgba(0, 150, 200, 0.8) !important;
+    --number-color: #00d4ff !important;
+    --string-color: #a0e0ff !important;
+    position: fixed !important;
+    top: 20px !important;
+    right: 20px !important;
+    z-index: 100 !important;
+    border-radius: 10px !important;
+    overflow: hidden !important;
+    backdrop-filter: blur(10px) !important;
+    -webkit-backdrop-filter: blur(10px) !important;
+}
+
+.lil-gui .title {
+    border-radius: 8px 8px 0 0;
+}
+
+/* Camera permission error */
+#permission-error {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: rgba(30, 30, 40, 0.95);
+    padding: 40px;
+    border-radius: 16px;
+    border: 1px solid rgba(255, 100, 100, 0.3);
+    text-align: center;
+    color: #fff;
+    max-width: 400px;
+    z-index: 1001;
+    display: none;
+}
+
+#permission-error h2 {
+    color: #ff6b6b;
+    margin-bottom: 15px;
+    font-size: 20px;
+}
+
+#permission-error p {
+    color: rgba(255, 255, 255, 0.7);
+    line-height: 1.6;
+    margin-bottom: 20px;
+}
+
+#permission-error button {
+    background: linear-gradient(135deg, #00d4ff, #0099cc);
+    border: none;
+    padding: 12px 30px;
+    border-radius: 8px;
+    color: #fff;
+    font-size: 14px;
+    cursor: pointer;
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+
+#permission-error button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 5px 20px rgba(0, 212, 255, 0.3);
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .lil-gui {
+        top: 10px !important;
+        right: 10px !important;
+        max-width: 280px !important;
+    }
+    
+    #fullscreen-btn {
+        bottom: 10px;
+        right: 10px;
+        width: 44px;
+        height: 44px;
+    }
+    
+    #hand-feedback {
+        bottom: 10px;
+        left: 10px;
+        font-size: 12px;
+        padding: 8px 12px;
+    }
+}
