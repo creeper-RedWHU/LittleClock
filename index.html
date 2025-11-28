@@ -262,6 +262,23 @@
             autoRotate: true
         };
 
+        // Frame timing constants
+        const FRAME_DELTA = 1 / 60; // Target 60fps delta time
+
+        // Hand tracking constants
+        const FINGER_COUNT = 5;
+        const HAND_OPENNESS_SCALE = 3;
+        const TWO_HANDS_DISTANCE_SCALE = 2;
+
+        // Heart shape parametric equation coefficients (standard heart curve)
+        const HEART_COEFFICIENTS = {
+            xAmplitude: 16,
+            yBase: 13,
+            y2t: 5,
+            y3t: 2,
+            y4t: 1
+        };
+
         // ============================================
         // SHAPE GENERATORS
         // ============================================
@@ -271,12 +288,13 @@
                 const t = (i / total) * Math.PI * 2;
                 const u = Math.random() * Math.PI * 2;
                 const v = Math.random() * Math.PI;
-                
+
                 const scale = 50;
-                const x = scale * (16 * Math.pow(Math.sin(t), 3)) * Math.sin(u) * Math.sin(v);
-                const y = scale * (13 * Math.cos(t) - 5 * Math.cos(2*t) - 2 * Math.cos(3*t) - Math.cos(4*t));
-                const z = scale * (16 * Math.pow(Math.sin(t), 3)) * Math.cos(u) * Math.sin(v);
-                
+                const { xAmplitude, yBase, y2t, y3t, y4t } = HEART_COEFFICIENTS;
+                const x = scale * (xAmplitude * Math.pow(Math.sin(t), 3)) * Math.sin(u) * Math.sin(v);
+                const y = scale * (yBase * Math.cos(t) - y2t * Math.cos(2*t) - y3t * Math.cos(3*t) - y4t * Math.cos(4*t));
+                const z = scale * (xAmplitude * Math.pow(Math.sin(t), 3)) * Math.cos(u) * Math.sin(v);
+
                 return { x, y, z };
             },
 
@@ -286,7 +304,7 @@
                 const theta = (i / total) * Math.PI * 4;
                 const phi = Math.random() * Math.PI * 2;
                 const r = 80 * Math.cos(k * theta);
-                
+
                 const x = r * Math.cos(theta) * Math.cos(phi);
                 const y = r * Math.sin(theta) + (Math.random() - 0.5) * 20;
                 const z = r * Math.cos(theta) * Math.sin(phi);
@@ -462,9 +480,9 @@
 
         function animate() {
             requestAnimationFrame(animate);
-            
-            time += 0.016;
-            
+
+            time += FRAME_DELTA;
+
             const positionAttribute = particles.geometry.attributes.position;
             const positions = positionAttribute.array;
             
@@ -572,15 +590,15 @@
 
         function onHandResults(results) {
             const opennessElement = document.getElementById('openness-value');
-            
+
             if (results.multiHandLandmarks && results.multiHandLandmarks.length > 0) {
                 // Calculate hand openness based on finger distances
                 const landmarks = results.multiHandLandmarks[0];
-                
+
                 // Calculate distance between fingertips and palm
                 const palmBase = landmarks[0];
                 const fingertips = [landmarks[4], landmarks[8], landmarks[12], landmarks[16], landmarks[20]];
-                
+
                 let totalDistance = 0;
                 fingertips.forEach(tip => {
                     const dx = tip.x - palmBase.x;
@@ -588,11 +606,11 @@
                     const dz = tip.z - palmBase.z;
                     totalDistance += Math.sqrt(dx*dx + dy*dy + dz*dz);
                 });
-                
+
                 // Normalize openness to 0-1 range
-                const avgDistance = totalDistance / 5;
-                handOpenness = Math.min(Math.max(avgDistance * 3, 0), 1);
-                
+                const avgDistance = totalDistance / FINGER_COUNT;
+                handOpenness = Math.min(Math.max(avgDistance * HAND_OPENNESS_SCALE, 0), 1);
+
                 // If two hands detected, use distance between them
                 if (results.multiHandLandmarks.length > 1) {
                     const hand1 = results.multiHandLandmarks[0][0];
@@ -600,9 +618,9 @@
                     const dx = hand1.x - hand2.x;
                     const dy = hand1.y - hand2.y;
                     const handDistance = Math.sqrt(dx*dx + dy*dy);
-                    handOpenness = Math.min(handDistance * 2, 1);
+                    handOpenness = Math.min(handDistance * TWO_HANDS_DISTANCE_SCALE, 1);
                 }
-                
+
                 opennessElement.textContent = Math.round(handOpenness * 100) + '%';
             } else {
                 // No hands detected - gradually return to default
