@@ -1,3 +1,21 @@
-WindowsFormsApp2/WindowsFormsApp2/bin/
-WindowsFormsApp2/WindowsFormsApp2/obj/
-WindowsFormsApp2/WindowsFormsApp2/Debug/
+# Dependencies
+node_modules/
+
+# Build outputs
+dist/
+build/
+
+# IDE
+.vscode/
+.idea/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+
+# Temporary files
+*.tmp
+*.temp
