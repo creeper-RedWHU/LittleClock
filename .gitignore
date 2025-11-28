@@ -1,3 +1,22 @@
+# Build artifacts (legacy)
 WindowsFormsApp2/WindowsFormsApp2/bin/
 WindowsFormsApp2/WindowsFormsApp2/obj/
 WindowsFormsApp2/WindowsFormsApp2/Debug/
+
+# Node modules (if added later)
+node_modules/
+
+# IDE files
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Temp files
+*.tmp
+*.temp
